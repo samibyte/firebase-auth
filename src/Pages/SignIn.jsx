@@ -1,7 +1,12 @@
 import { Link } from "react-router";
 import MyContainer from "../Components/MyContainer";
+import { IoEyeOff } from "react-icons/io5";
+import { FaEye } from "react-icons/fa";
+import { useState } from "react";
 
 const Signin = () => {
+  const [show, setShow] = useState(false);
+
   return (
     <div className="min-h-[calc(100vh-20px)] flex items-center justify-center bg-gradient-to-br from-blue-500 via-indigo-600 to-purple-600 relative overflow-hidden">
       {/* Animated glow orbs */}
@@ -41,12 +46,21 @@ const Signin = () => {
               </div>
 
               <div className="relative">
-                <label className="block text-sm mb-1">Password</label>
+                <label className="block text-sm font-medium mb-1">
+                  Password
+                </label>
                 <input
+                  type={show ? "text" : "password"}
                   name="password"
-                  placeholder="••••••••"
-                  className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  placeholder="Enter Your Password"
+                  className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-pink-400"
                 />
+                <span
+                  onClick={() => setShow(!show)}
+                  className="absolute top-7 p-2 right-0 cursor-pointer"
+                >
+                  {show ? <IoEyeOff /> : <FaEye />}
+                </span>
               </div>
 
               <button type="submit" className="my-btn">
@@ -76,7 +90,7 @@ const Signin = () => {
               <p className="text-center text-sm text-white/80 mt-3">
                 Don’t have an account?{" "}
                 <Link
-                  to="/signup"
+                  to="/sign-up"
                   className="text-pink-300 hover:text-white underline"
                 >
                   Sign up

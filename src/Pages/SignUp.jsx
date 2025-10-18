@@ -1,7 +1,44 @@
 import { Link } from "react-router";
 import MyContainer from "../Components/MyContainer";
+import { use, useState } from "react";
+import { AuthContext } from "../Contexts/AuthContext/AuthContext";
+import { IoEyeOff } from "react-icons/io5";
+import { FaEye } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
+  const [show, setShow] = useState(false);
+
+  const { createUser } = use(AuthContext);
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character (@, $, !, %, *, ?, &)."
+      );
+      return;
+    }
+
+    createUser(email, password)
+      .then((result) => {
+        console.log(result.user);
+        toast.success("Sign Up Successful");
+      })
+      .catch((err) => {
+        if (err.code === "auth/email-already-in-use") {
+          toast.error("User already exists");
+        }
+      });
+  };
+
   return (
     <div className="min-h-[96vh] flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 relative overflow-hidden">
       {/* Animated floating circles */}
@@ -27,7 +64,7 @@ const SignUp = () => {
               Sign Up
             </h2>
 
-            <form className="space-y-4">
+            <form onSubmit={handleSignUp} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Email</label>
                 <input
@@ -35,6 +72,7 @@ const SignUp = () => {
                   name="email"
                   placeholder="example@email.com"
                   className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  required
                 />
               </div>
 
@@ -43,14 +81,21 @@ const SignUp = () => {
                   Password
                 </label>
                 <input
-                  type={"text"}
+                  type={show ? "text" : "password"}
                   name="password"
-                  placeholder="••••••••"
+                  placeholder="Enter Your Password"
                   className="input input-bordered w-full bg-white/20 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-pink-400"
+                  required
                 />
+                <span
+                  onClick={() => setShow(!show)}
+                  className="absolute top-7 p-2 right-0 cursor-pointer"
+                >
+                  {show ? <IoEyeOff /> : <FaEye />}
+                </span>
               </div>
 
-              <button type="submit" className="btn my-btn">
+              <button type="submit" className="my-btn">
                 Sign Up
               </button>
 
